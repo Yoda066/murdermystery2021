@@ -1,9 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:like_button/like_button.dart';
-// import 'package:strazca_revirov/models/location.dart';
 
 import 'models/Npc.dart';
 
@@ -14,14 +11,19 @@ class NpcListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(15.0),
-      margin: EdgeInsets.only(bottom: 5),
-      constraints: BoxConstraints.expand(height: 130),
-      color: Colors.grey[300],
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [Expanded(child: getTitleAndLike()), getImage()],
+    return GestureDetector(
+      onTap: () {
+        print('clicked on: ' + npc.name);
+      },
+      child: Container(
+        padding: EdgeInsets.all(15.0),
+        margin: EdgeInsets.only(bottom: 5),
+        constraints: BoxConstraints.expand(height: 130),
+        color: Colors.grey[300],
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [Expanded(child: getTitleAndLike()), getImage()],
+        ),
       ),
     );
   }
