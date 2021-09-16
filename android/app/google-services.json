@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "567967765714",
+    "firebase_url": "https://murdermystery-2021-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "murdermystery-2021",
+    "storage_bucket": "murdermystery-2021.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:567967765714:android:3873520773383c98e5490b",
+        "android_client_info": {
+          "package_name": "com.dhorvath.murdermystery2021"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "567967765714-nl505c2k2uc92q6s6ijk5j09rd5e7ag8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBYWNuclIl180RSrLXn9Bcs_sllElZB4Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "567967765714-nl505c2k2uc92q6s6ijk5j09rd5e7ag8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "567967765714-c88mc0bnotvjhcdpi8l0s07l19bkdqvt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dhorvath.murderMystery2021"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
