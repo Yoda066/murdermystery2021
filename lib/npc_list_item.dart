@@ -17,7 +17,7 @@ class NpcListItem extends StatelessWidget {
         print('clicked on: ' + npc.name);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => NpcDetailPage(npc)),
+          MaterialPageRoute(builder: (context) => NpcState(npc)),
         );
       },
       child: Container(

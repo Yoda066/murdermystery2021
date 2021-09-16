@@ -45,7 +45,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   DatabaseReference itemref;
   var locations = List();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   void initState() {

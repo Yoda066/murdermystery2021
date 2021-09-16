@@ -1,20 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:murdermystery2021/models/Npc.dart';
 
 class NpcDetailPage extends StatelessWidget {
+  const NpcDetailPage(this.npc);
+
   final Npc npc;
 
   final imageWidth = 200.0;
 
-  NpcDetailPage(this.npc);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Second Route"),
-        ),
+        appBar: AppBar(),
         body: Container(
           padding: EdgeInsets.all(15.0),
           margin: EdgeInsets.only(bottom: 5),
@@ -26,13 +25,13 @@ class NpcDetailPage extends StatelessWidget {
                   imageBuilder: (context, imageProvider) => Container(
                     height: imageWidth,
                     width: imageWidth,
-                    clipBehavior: Clip.none,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      image: DecorationImage(
-                          image: imageProvider, fit: BoxFit.cover),
-                    ),
-                  ),
+                        clipBehavior: Clip.none,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          image: DecorationImage(
+                              image: imageProvider, fit: BoxFit.cover),
+                        ),
+                      ),
                 ),
                 SizedBox(height: 10),
                 Text(npc.name,
@@ -44,5 +43,40 @@ class NpcDetailPage extends StatelessWidget {
             ),
           ),
         ));
+  }
+}
+
+class NpcState extends StatefulWidget {
+  const NpcState(this.npc);
+
+  final Npc npc;
+
+  @override
+  _NpcStateState createState() => _NpcStateState();
+}
+
+class _NpcStateState extends State<NpcState> {
+  DatabaseReference itemref;
+  Npc npc;
+
+  @override
+  void initState() {
+    super.initState();
+    npc = widget.npc;
+    itemref = FirebaseDatabase.instance.reference().child("NPCS");
+    itemref.onChildChanged.listen(_onEntryChanged);
+  }
+
+  _onEntryChanged(Event event) {
+    if (widget.npc.key == event.snapshot.key) {
+      setState(() {
+        npc = Npc.fromSnapshot(event.snapshot);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NpcDetailPage(npc);
   }
 }
