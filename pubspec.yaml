@@ -25,6 +25,7 @@ dependencies:
   firebase_database:
   firebase_core: ^0.5.0
   cached_network_image:
+  firebase_auth:
   http: any
   flutter:
     sdk: flutter

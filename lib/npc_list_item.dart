@@ -34,13 +34,9 @@ class NpcListItem extends StatelessWidget {
               maxLines: 2,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
       Align(
-          alignment: Alignment.bottomLeft,
-          // child: LikeButton(
-          //   isLiked: location.likedByMe,
-          //   onTap: onLikeButtonTapped,
-          //   likeCount: location.likes,
-          // )/*_buildLikeColumn()*/)
-      )
+          alignment: Alignment.topLeft,
+          child: Text(npc.backstory,
+              style: TextStyle(fontSize: 15)))
     ]);
   }
 

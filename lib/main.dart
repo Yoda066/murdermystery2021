@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
@@ -15,6 +16,7 @@ void main() async {
           apiKey: "AIzaSyBBYWNuclIl180RSrLXn9Bcs_sllElZB4Q",
           databaseURL: "https://murdermystery-2021-default-rtdb.europe-west1.firebasedatabase.app",
           messagingSenderId: "567967765714"));
+  await FirebaseAuth.instance.signInAnonymously();
   runApp(MyApp());
 }
 
