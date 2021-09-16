@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:murdermystery2021/npc_detail_page.dart';
 
 import 'models/Npc.dart';
 
@@ -14,6 +15,10 @@ class NpcListItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         print('clicked on: ' + npc.name);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => NpcDetailPage(npc)),
+        );
       },
       child: Container(
         padding: EdgeInsets.all(15.0),
@@ -53,6 +58,7 @@ class NpcListItem extends StatelessWidget {
             width: imageWidth,
             clipBehavior: Clip.none,
             decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
               shape: BoxShape.rectangle,
               image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
             ),

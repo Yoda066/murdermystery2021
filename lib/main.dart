@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -52,7 +51,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     itemref = FirebaseDatabase.instance.reference().child("NPCS");
-    print(FirebaseFirestore.instance.collection("NPCS").get());
     itemref.onChildAdded.listen(_onEntryAdded);
     itemref.onChildChanged.listen(_onEntryChanged);
   }
