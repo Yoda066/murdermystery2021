@@ -117,17 +117,21 @@ class _NpcStateState extends State<NpcState> {
 
   _onEntryChanged(Event event) {
     if (widget.npc.key == event.snapshot.key) {
-      setState(() {
-        npc = Npc.fromSnapshot(event.snapshot);
-      });
+      if (mounted) {
+        setState(() {
+          npc = Npc.fromSnapshot(event.snapshot);
+        });
+      }
     }
   }
 
   void _loadUser() async {
     var logged = await MySharedPreferences.getLoggedUser();
-    setState(() {
-      this.user = logged;
-    });
+    if (mounted) {
+      setState(() {
+        this.user = logged;
+      });
+    }
   }
 
   void _updateAllocation(LoggedUser user) async {
@@ -138,10 +142,7 @@ class _NpcStateState extends State<NpcState> {
       if (key != null) {
         await itemref.once().then((DataSnapshot dataSnapshot) async {
           dataSnapshot.value.forEach((key, value) async {
-            print(
-                'name: ${value['name']}, calledBy: ${value['calledBy']}, user: ${user.key}, updating: ${value['calledBy'] == user.key}');
             if (value['calledBy'] == user.key) {
-              print('UPDATING... ');
               await itemref.child(key).update({'calledBy': null});
             }
           });

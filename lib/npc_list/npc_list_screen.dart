@@ -32,15 +32,19 @@ class _NpcListState extends State<NpcListScreen> {
       return element.key == event.snapshot.key;
     });
 
-    setState(() {
-      locations[locations.indexOf(old)] = Npc.fromSnapshot(event.snapshot);
-    });
+    if (mounted) {
+      setState(() {
+        locations[locations.indexOf(old)] = Npc.fromSnapshot(event.snapshot);
+      });
+    }
   }
 
   _onEntryAdded(Event event) {
-    setState(() {
-      locations.add(Npc.fromSnapshot(event.snapshot));
-    });
+    if (mounted) {
+      setState(() {
+        locations.add(Npc.fromSnapshot(event.snapshot));
+      });
+    }
   }
 
   @override

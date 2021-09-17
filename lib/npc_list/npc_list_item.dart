@@ -22,12 +22,12 @@ class NpcListItem extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(15.0),
         margin: EdgeInsets.only(bottom: 5),
-        constraints: BoxConstraints.expand(height: 130),
+        constraints: BoxConstraints.expand(height: 150),
         color: Colors.grey[300],
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(child: getTitleAndLike()),
+            Expanded(child: getInfo()),
             const SizedBox(width: 5),
             getImage()
           ],
@@ -36,7 +36,7 @@ class NpcListItem extends StatelessWidget {
     );
   }
 
-  Widget getTitleAndLike() {
+  Widget getInfo() {
     return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Align(
           alignment: Alignment.topLeft,
@@ -46,7 +46,11 @@ class NpcListItem extends StatelessWidget {
       Align(
           alignment: Alignment.topLeft,
           child:
-              Text(npc.backstory, maxLines: 3, style: TextStyle(fontSize: 15)))
+              Text(npc.backstory, maxLines: 3, style: TextStyle(fontSize: 15))),
+      Align(
+        alignment: Alignment.topLeft,
+        child: getStatus(npc),
+      )
     ]);
   }
 
@@ -67,5 +71,15 @@ class NpcListItem extends StatelessWidget {
             ),
           ),
         ));
+  }
+
+  Widget getStatus(Npc npc) {
+    if (npc.calledBy == null) {
+      return Text('Status: Dostupný',
+          maxLines: 2, style: TextStyle(fontSize: 15));
+    } else {
+      return Text('Status: Zaneprázdnený pri tíme "${npc.calledBy}"',
+          maxLines: 2, style: TextStyle(fontSize: 15));
+    }
   }
 }
