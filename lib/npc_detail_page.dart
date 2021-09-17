@@ -2,11 +2,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:murdermystery2021/models/Npc.dart';
+import 'package:murdermystery2021/models/User.dart';
+import 'package:murdermystery2021/utils/MySharedPreferences.dart';
 
 class NpcDetailPage extends StatelessWidget {
-  const NpcDetailPage(this.npc);
+  const NpcDetailPage(this.npc, this.user, this.updateAllocation);
 
   final Npc npc;
+
+  final updateAllocation;
+  final LoggedUser user;
 
   final imageWidth = 200.0;
 
@@ -16,7 +21,6 @@ class NpcDetailPage extends StatelessWidget {
         appBar: AppBar(),
         body: Container(
           padding: EdgeInsets.all(15.0),
-          margin: EdgeInsets.only(bottom: 5),
           child: Center(
             child: Column(
               children: [
@@ -25,13 +29,13 @@ class NpcDetailPage extends StatelessWidget {
                   imageBuilder: (context, imageProvider) => Container(
                     height: imageWidth,
                     width: imageWidth,
-                        clipBehavior: Clip.none,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          image: DecorationImage(
-                              image: imageProvider, fit: BoxFit.cover),
-                        ),
-                      ),
+                    clipBehavior: Clip.none,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.cover),
+                    ),
+                  ),
                 ),
                 SizedBox(height: 10),
                 Text(npc.name,
@@ -39,10 +43,52 @@ class NpcDetailPage extends StatelessWidget {
                         TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                 SizedBox(height: 10),
                 Text(npc.backstory, style: TextStyle(fontSize: 15)),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: _getCallButton(),
+                )
               ],
             ),
           ),
         ));
+  }
+
+  Widget _getCallButton() {
+    if (user != null) {
+      if (user.type == UserType.PLAYER) {
+        return RaisedButton(
+            onPressed: _callNpcFunction(),
+            child: Text("Privolať", style: TextStyle(fontSize: 15)));
+      }
+
+      if (user.type == UserType.NPC && user.key == npc.key) {
+        return RaisedButton(
+            onPressed: _freeNpcFunction(),
+            child: Text("Uvoľniť sa.", style: TextStyle(fontSize: 15)));
+      }
+    }
+
+    return SizedBox(height: 0);
+  }
+
+  Function _callNpcFunction() {
+    if (npc.calledBy == null) {
+      return () {
+        updateAllocation(user);
+      };
+    } else {
+      return null;
+    }
+  }
+
+  _freeNpcFunction() {
+    if (npc.calledBy != null) {
+      return () {
+        updateAllocation(null);
+      };
+    } else {
+      return null;
+    }
   }
 }
 
@@ -58,6 +104,7 @@ class NpcState extends StatefulWidget {
 class _NpcStateState extends State<NpcState> {
   DatabaseReference itemref;
   Npc npc;
+  LoggedUser user;
 
   @override
   void initState() {
@@ -65,6 +112,7 @@ class _NpcStateState extends State<NpcState> {
     npc = widget.npc;
     itemref = FirebaseDatabase.instance.reference().child("NPCS");
     itemref.onChildChanged.listen(_onEntryChanged);
+    _loadUser();
   }
 
   _onEntryChanged(Event event) {
@@ -75,8 +123,42 @@ class _NpcStateState extends State<NpcState> {
     }
   }
 
+  void _loadUser() async {
+    var logged = await MySharedPreferences.getLoggedUser();
+    setState(() {
+      this.user = logged;
+    });
+  }
+
+  void _updateAllocation(LoggedUser user) async {
+    var key = user == null ? null : user.key;
+
+    try {
+      //ak ide hrac niekoho zavolat, zrusi sa zavolanie predchadzajuceho NPC
+      if (key != null) {
+        await itemref.once().then((DataSnapshot dataSnapshot) async {
+          dataSnapshot.value.forEach((key, value) async {
+            print(
+                'name: ${value['name']}, calledBy: ${value['calledBy']}, user: ${user.key}, updating: ${value['calledBy'] == user.key}');
+            if (value['calledBy'] == user.key) {
+              print('UPDATING... ');
+              await itemref.child(key).update({'calledBy': null});
+            }
+          });
+        }).catchError((e) {
+          print(e);
+        });
+      }
+
+      await itemref.child(npc.key).update({'calledBy': key});
+      print('Success.');
+    } catch (e) {
+      print('You got error.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return NpcDetailPage(npc);
+    return NpcDetailPage(npc, user, _updateAllocation);
   }
 }

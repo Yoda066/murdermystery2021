@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:murdermystery2021/login/login_screen.dart';
 import 'package:murdermystery2021/models/User.dart';
-import 'package:murdermystery2021/npc_list_screen.dart';
+import 'package:murdermystery2021/npc_list/npc_list_screen.dart';
 import 'package:murdermystery2021/utils/MySharedPreferences.dart';
 
 void main() async {

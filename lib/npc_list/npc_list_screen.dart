@@ -2,7 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:murdermystery2021/models/Npc.dart';
-import 'package:murdermystery2021/npc_list_item.dart';
+import 'package:murdermystery2021/npc_list/npc_list_item.dart';
 import 'package:murdermystery2021/utils/MySharedPreferences.dart';
 
 class NpcListScreen extends StatefulWidget {
