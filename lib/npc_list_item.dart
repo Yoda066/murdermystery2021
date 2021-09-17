@@ -14,7 +14,6 @@ class NpcListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('clicked on: ' + npc.name);
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => NpcState(npc)),
@@ -27,7 +26,11 @@ class NpcListItem extends StatelessWidget {
         color: Colors.grey[300],
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [Expanded(child: getTitleAndLike()), getImage()],
+          children: [
+            Expanded(child: getTitleAndLike()),
+            const SizedBox(width: 5),
+            getImage()
+          ],
         ),
       ),
     );
@@ -42,8 +45,8 @@ class NpcListItem extends StatelessWidget {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
       Align(
           alignment: Alignment.topLeft,
-          child: Text(npc.backstory,
-              style: TextStyle(fontSize: 15)))
+          child:
+              Text(npc.backstory, maxLines: 3, style: TextStyle(fontSize: 15)))
     ]);
   }
 
@@ -65,46 +68,4 @@ class NpcListItem extends StatelessWidget {
           ),
         ));
   }
-
-  // Widget _buildLikeColumn() {
-  //   Color finalColor = (location.likedByMe) ? Colors.pink : Colors.black;
-  //
-  //   return GestureDetector(
-  //       onTap: () {
-  //         location.likedByMe = !location.likedByMe;
-  //         print('${location.title} liked: ${location.likedByMe}');
-  //       },
-  //       child: Row(
-  //         children: [
-  //           Icon(Icons.favorite, color: finalColor),
-  //           Container(
-  //             margin: const EdgeInsets.only(left: 5),
-  //             child: Text(
-  //               location.likes.toString(),
-  //               style: TextStyle(
-  //                 fontSize: 17,
-  //                 fontWeight: FontWeight.w400,
-  //                 color: finalColor,
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ));
-  // }
-
-  // Future<bool> onLikeButtonTapped(bool isLiked) async {
-  //   /// ulozit do db
-  //   // DatabaseReference ref = FirebaseDatabase.instance.reference().child("cabins/${location.key}");
-  //   // ref.update(value)
-  //   // ref.set({
-  //   //   username: name,
-  //   //   email: email,
-  //   //   profile_picture : imageUrl
-  //   // });
-  //
-  //
-  //   location.likedByMe = !isLiked;
-  //
-  //   return !isLiked;
-  // }
 }

@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
-import 'package:murdermystery2021/models/Npc.dart';
-import 'package:murdermystery2021/npc_list_item.dart';
+import 'package:murdermystery2021/login/login_screen.dart';
+import 'package:murdermystery2021/models/User.dart';
+import 'package:murdermystery2021/npc_list_screen.dart';
+import 'package:murdermystery2021/utils/MySharedPreferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +13,8 @@ void main() async {
           projectId: "murdermystery-2021",
           appId: "1:567967765714:android:3873520773383c98e5490b",
           apiKey: "AIzaSyBBYWNuclIl180RSrLXn9Bcs_sllElZB4Q",
-          databaseURL: "https://murdermystery-2021-default-rtdb.europe-west1.firebasedatabase.app",
+          databaseURL:
+              "https://murdermystery-2021-default-rtdb.europe-west1.firebasedatabase.app",
           messagingSenderId: "567967765714"));
   await FirebaseAuth.instance.signInAnonymously();
   runApp(MyApp());
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Murder Mystery 2021 test',
+      title: 'Murder Mystery 2021',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -43,48 +44,52 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  DatabaseReference itemref;
-  var locations = List();
+  LoggedUser loggedUser;
 
   @override
   void initState() {
     super.initState();
-    itemref = FirebaseDatabase.instance.reference().child("NPCS");
-    itemref.onChildAdded.listen(_onEntryAdded);
-    itemref.onChildChanged.listen(_onEntryChanged);
-  }
-
-  _onEntryChanged(Event event) {
-    var old = locations.singleWhere((element) {
-      return element.key == event.snapshot.key;
-    });
-
-    setState(() {
-      locations[locations.indexOf(old)] = Npc.fromSnapshot(event.snapshot);
-    });
-  }
-
-  _onEntryAdded(Event event) {
-    setState(() {
-      locations.add(Npc.fromSnapshot(event.snapshot));
-    });
+    _loadUser();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(getWelcomeString()),
       ),
       resizeToAvoidBottomPadding: false,
-      body: FirebaseAnimatedList(
-          query: itemref,
-          itemBuilder: (BuildContext context, DataSnapshot snapshot,
-              Animation<double> animation, int index) {
-            return NpcListItem(Npc.fromSnapshot(snapshot));
-          }), // This trailing comma makes auto-formatting nicer for build methods.
+      body:
+          _getScreenForUser(), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
+  Widget _getScreenForUser() {
+    if (loggedUser == null) {
+      return LoginScreen(userChanged: _userChanged);
+    } else {
+      return NpcListScreen(userChanged: _userChanged);
+    }
+  }
 
+  _userChanged(LoggedUser user) {
+    setState(() {
+      loggedUser = user;
+    });
+  }
+
+  Future<void> _loadUser() async {
+    var user = await MySharedPreferences.getLoggedUser();
+    setState(() {
+      loggedUser = user;
+    });
+  }
+
+  String getWelcomeString() {
+    if (loggedUser == null) {
+      return widget.title;
+    } else {
+      return 'Vitaj ${loggedUser.key}';
+    }
+  }
 }
