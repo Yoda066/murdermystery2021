@@ -5,13 +5,12 @@ import 'package:murdermystery2021/models/Npc.dart';
 import 'package:murdermystery2021/models/User.dart';
 import 'package:murdermystery2021/utils/MySharedPreferences.dart';
 
-class NpcDetailPage extends StatelessWidget {
-  const NpcDetailPage(this.npc, this.user, this.updateAllocation);
+class NpcDetailScreen extends StatelessWidget {
+  const NpcDetailScreen(this.npc, this.user, this.updateAllocation);
 
   final Npc npc;
-
-  final updateAllocation;
   final LoggedUser user;
+  final updateAllocation;
 
   final imageWidth = 200.0;
 
@@ -160,6 +159,6 @@ class _NpcStateState extends State<NpcState> {
 
   @override
   Widget build(BuildContext context) {
-    return NpcDetailPage(npc, user, _updateAllocation);
+    return NpcDetailScreen(npc, user, _updateAllocation);
   }
 }

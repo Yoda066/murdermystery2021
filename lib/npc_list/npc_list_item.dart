@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:murdermystery2021/npc_detail_page.dart';
+import 'package:murdermystery2021/npc_detail_screen.dart';
 
 import '../models/Npc.dart';
 
