@@ -3,13 +3,8 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:murdermystery2021/models/Npc.dart';
 import 'package:murdermystery2021/npc_list/npc_list_item.dart';
-import 'package:murdermystery2021/utils/MySharedPreferences.dart';
 
 class NpcListScreen extends StatefulWidget {
-  final userChanged;
-
-  NpcListScreen({this.userChanged});
-
   @override
   _NpcListState createState() => _NpcListState();
 }
@@ -49,27 +44,20 @@ class _NpcListState extends State<NpcListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-      RaisedButton(
-        child: const Text('logout'),
-        onPressed: () {
-          _logout();
-        },
-      ),
-      Expanded(
-        child: FirebaseAnimatedList(
-          query: itemref,
-          itemBuilder: (BuildContext context, DataSnapshot snapshot,
-              Animation<double> animation, int index) {
-            return NpcListItem(Npc.fromSnapshot(snapshot));
-          }, // This trailing comma makes auto-formatting nicer for build methods.
-        ),
-      )
-    ]);
-  }
-
-  void _logout() async {
-    await MySharedPreferences.logout();
-    widget.userChanged(null);
+    return Scaffold(
+        appBar: AppBar(),
+        body: Column(
+          children: [
+            Expanded(
+              child: FirebaseAnimatedList(
+                query: itemref,
+                itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                    Animation<double> animation, int index) {
+                  return NpcListItem(Npc.fromSnapshot(snapshot));
+                }, // This trailing comma makes auto-formatting nicer for build methods.
+              ),
+            )
+          ],
+        ));
   }
 }

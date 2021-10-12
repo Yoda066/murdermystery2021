@@ -7,11 +7,10 @@ class Npc {
   final String image;
   final String occupation;
   final int age;
+  bool unavailable = false;
 
   /// Contains od of palyer calling for this NPC
   String calledBy;
-
-  Npc(this.name, this.backstory, this.image, this.occupation, this.age);
 
   Npc.fromSnapshot(DataSnapshot snapshot)
       : key = snapshot.key,
@@ -20,7 +19,8 @@ class Npc {
         calledBy = snapshot.value['calledBy'],
         image = snapshot.value['image'],
         occupation = snapshot.value['occupation'],
-        age = snapshot.value['age'];
+        age = snapshot.value['age'],
+        unavailable = snapshot.value['unavailable'] ?? false;
 
   toJson() {
     return {"name": name, "description": backstory, "image": image};

@@ -12,7 +12,7 @@ class NpcDetailScreen extends StatelessWidget {
   final LoggedUser user;
   final updateAllocation;
 
-  final imageWidth = 200.0;
+  final imageWidth = 250.0;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,8 @@ class NpcDetailScreen extends StatelessWidget {
         appBar: AppBar(),
         body: Container(
           padding: EdgeInsets.all(15.0),
-          child: Center(
+          child: SingleChildScrollView(
+              child: Center(
             child: Column(
               children: [
                 CachedNetworkImage(
@@ -48,11 +49,15 @@ class NpcDetailScreen extends StatelessWidget {
                 )
               ],
             ),
-          ),
+          )),
         ));
   }
 
   Widget _getCallButton() {
+    if (npc.unavailable) {
+      return SizedBox(height: 0);
+    }
+
     if (user != null) {
       if (user.type == UserType.PLAYER) {
         return RaisedButton(

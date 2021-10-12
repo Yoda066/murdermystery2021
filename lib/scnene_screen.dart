@@ -2,6 +2,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:murdermystery2021/models/Scene.dart';
+import 'package:murdermystery2021/models/User.dart';
+import 'package:murdermystery2021/utils/MySharedPreferences.dart';
 
 class SceneScreen extends StatefulWidget {
   @override
@@ -11,6 +13,7 @@ class SceneScreen extends StatefulWidget {
 class _SceneState extends State<SceneScreen> {
   DatabaseReference itemref;
   Scene scene;
+  LoggedUser user;
 
   _SceneState({this.scene});
 
@@ -21,6 +24,7 @@ class _SceneState extends State<SceneScreen> {
         FirebaseDatabase.instance.reference().child("SCENES").child("Abarat");
     itemref.onChildChanged.listen(_onEntryChanged);
     itemref.onValue.listen(_onEntryChanged);
+    _loadUser();
   }
 
   _onEntryChanged(Event event) {
@@ -33,8 +37,22 @@ class _SceneState extends State<SceneScreen> {
     }
   }
 
+  void _loadUser() async {
+    var logged = await MySharedPreferences.getLoggedUser();
+    if (mounted) {
+      setState(() {
+        this.user = logged;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text(user?.key ?? "")), body: getBody());
+  }
+
+  getBody() {
     if (scene == null) {
       return Text("Loading...", style: TextStyle(fontSize: 15));
     } else {

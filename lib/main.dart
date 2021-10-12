@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:murdermystery2021/login/login_screen.dart';
+import 'package:murdermystery2021/menu_screen.dart';
 import 'package:murdermystery2021/models/User.dart';
-import 'package:murdermystery2021/scnene_screen.dart';
 import 'package:murdermystery2021/utils/MySharedPreferences.dart';
 
 void main() async {
@@ -69,8 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return LoginScreen(userChanged: _userChanged);
     } else {
       //do the menu
-      return SceneScreen();
-      // return NpcListScreen(userChanged: _userChanged);
+      return MenuScreen(userChanged: _userChanged);
     }
   }
 
