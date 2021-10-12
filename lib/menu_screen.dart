@@ -28,7 +28,6 @@ class MenuScreen extends StatelessWidget {
         const SizedBox(height: 30),
         RaisedButton(
           onPressed: () {
-            //todo odnavigovat k obeti
             _navigateToVictim(context);
           },
           child: const Text('Obeť'),
