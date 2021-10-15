@@ -37,16 +37,20 @@ class NpcListItem extends StatelessWidget {
   }
 
   Widget getInfo() {
+    // npc.backstory.split('. ').sublist(0, 5).join(".")+".";
+
     return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Align(
           alignment: Alignment.topLeft,
           child: Text(npc.name,
-              maxLines: 2,
+              maxLines: 1,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
       Align(
           alignment: Alignment.topLeft,
-          child:
-              Text(npc.backstory, maxLines: 3, style: TextStyle(fontSize: 15))),
+          child: Text(npc.backstory,
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 15))),
       Align(
         alignment: Alignment.topLeft,
         child: getStatus(npc),

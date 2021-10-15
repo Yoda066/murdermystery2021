@@ -15,41 +15,45 @@ class MenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        RaisedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SceneScreen()),
-            );
-          },
-          child: const Text('Scéna'),
-        ),
-        const SizedBox(height: 30),
-        RaisedButton(
-          onPressed: () {
-            _navigateToVictim(context);
-          },
-          child: const Text('Obeť'),
-        ),
-        const SizedBox(height: 30),
-        RaisedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => NpcListScreen()),
-            );
-          },
-          child: const Text('Zoznam podozrivých'),
-        ),
-        const SizedBox(height: 30),
-        RaisedButton(
-          onPressed: () {
-            _logout();
-          },
-          child: const Text('Odhlásiť'),
-        )
-      ]),
+      child: FractionallySizedBox(
+        widthFactor: 0.5,
+        heightFactor: 0.45,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              RaisedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SceneScreen()),
+                  );
+                },
+                child: const Text('Scéna'),
+              ),
+              RaisedButton(
+                onPressed: () {
+                  _navigateToVictim(context);
+                },
+                child: const Text('Obeť'),
+              ),
+              RaisedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NpcListScreen()),
+                  );
+                },
+                child: const Text('Zoznam podozrivých'),
+              ),
+              RaisedButton(
+                onPressed: () {
+                  _logout();
+                },
+                child: const Text('Odhlásiť'),
+              )
+            ]),
+      ),
     );
   }
 

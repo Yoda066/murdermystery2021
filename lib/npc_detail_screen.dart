@@ -17,11 +17,10 @@ class NpcDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: Container(
+      appBar: AppBar(),
+      body: Container(
           padding: EdgeInsets.all(15.0),
           child: SingleChildScrollView(
-              child: Center(
             child: Column(
               children: [
                 CachedNetworkImage(
@@ -31,6 +30,7 @@ class NpcDetailScreen extends StatelessWidget {
                     width: imageWidth,
                     clipBehavior: Clip.none,
                     decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
                       shape: BoxShape.rectangle,
                       image: DecorationImage(
                           image: imageProvider, fit: BoxFit.cover),
@@ -41,6 +41,27 @@ class NpcDetailScreen extends StatelessWidget {
                 Text(npc.name,
                     style:
                         TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                Row(
+                  children: [
+                    Text('Vek: ${npc.age}',
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                SizedBox(height: 5),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Zamestnanie: ',
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold)),
+                    Expanded(
+                        child: Text('${npc.occupation}',
+                            style: TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.bold)))
+                  ],
+                ),
                 SizedBox(height: 10),
                 Text(npc.backstory, style: TextStyle(fontSize: 15)),
                 Align(
@@ -50,7 +71,7 @@ class NpcDetailScreen extends StatelessWidget {
               ],
             ),
           )),
-        ));
+    );
   }
 
   Widget _getCallButton() {
