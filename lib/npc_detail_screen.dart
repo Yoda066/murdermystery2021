@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:murdermystery2021/models/Npc.dart';
@@ -23,19 +22,12 @@ class NpcDetailScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                CachedNetworkImage(
-                  imageUrl: npc.image,
-                  imageBuilder: (context, imageProvider) => Container(
-                    height: imageWidth,
-                    width: imageWidth,
-                    clipBehavior: Clip.none,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      shape: BoxShape.rectangle,
-                      image: DecorationImage(
-                          image: imageProvider, fit: BoxFit.cover),
-                    ),
-                  ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image(
+                      image: AssetImage('images/profiles/${npc.image}'),
+                      height: imageWidth,
+                      width: imageWidth),
                 ),
                 SizedBox(height: 10),
                 Text(npc.name,

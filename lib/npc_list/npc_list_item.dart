@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:murdermystery2021/npc_detail_screen.dart';
@@ -59,22 +58,12 @@ class NpcListItem extends StatelessWidget {
   }
 
   Widget getImage() {
-    final double imageWidth = 100.0;
-    return Container(
-        alignment: Alignment.centerRight,
-        child: CachedNetworkImage(
-          imageUrl: npc.image,
-          imageBuilder: (context, imageProvider) => Container(
-            height: imageWidth,
-            width: imageWidth,
-            clipBehavior: Clip.none,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              shape: BoxShape.rectangle,
-              image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-            ),
-          ),
-        ));
+    return ClipRRect(
+        borderRadius: BorderRadius.circular(10.0),
+        child: Image(
+            image: AssetImage('images/profiles/${npc.image}'),
+            width: 100.0,
+            height: 100.0));
   }
 
   Widget getStatus(Npc npc) {
