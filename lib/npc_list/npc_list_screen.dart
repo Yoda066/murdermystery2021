@@ -11,7 +11,7 @@ class NpcListScreen extends StatefulWidget {
 
 class _NpcListState extends State<NpcListScreen> {
   DatabaseReference itemref;
-  var locations = List();
+  var locations = [];
   var loggedUser;
 
   @override
@@ -49,14 +49,22 @@ class _NpcListState extends State<NpcListScreen> {
         body: Column(
           children: [
             Expanded(
-              child: FirebaseAnimatedList(
-                query: itemref,
-                itemBuilder: (BuildContext context, DataSnapshot snapshot,
-                    Animation<double> animation, int index) {
-                  return NpcListItem(Npc.fromSnapshot(snapshot));
-                }, // This trailing comma makes auto-formatting nicer for build methods.
+                child: DecoratedBox(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage("images/pozadie.png"), fit: BoxFit.cover),
               ),
-            )
+              child: Container(
+                padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                child: FirebaseAnimatedList(
+                  query: itemref,
+                  itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                      Animation<double> animation, int index) {
+                    return NpcListItem(Npc.fromSnapshot(snapshot));
+                  }, // This trailing comma makes auto-formatting nicer for build methods.
+                ),
+              ),
+            ))
           ],
         ));
   }

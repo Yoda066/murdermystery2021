@@ -57,18 +57,29 @@ class _SceneState extends State<SceneScreen> {
       return Text("Loading...", style: TextStyle(fontSize: 15));
     } else {
       return SingleChildScrollView(
-          child: Column(children: [
-        Image(image: AssetImage('images/scene_back.jpg')),
-        Container(
-            padding: EdgeInsets.all(15.0),
-            child: Column(children: [
-              SizedBox(height: 10),
-              Text(scene.title,
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-              SizedBox(height: 10),
-              Text(scene.description, style: TextStyle(fontSize: 15))
-            ]))
-      ]));
+          child: DecoratedBox(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage("images/pozadie.png"), fit: BoxFit.cover),
+              ),
+              child: Column(children: [
+                Image(image: AssetImage('images/scene_back.jpg')),
+                Container(
+                    padding: EdgeInsets.all(15.0),
+                    child: Column(children: [
+                      SizedBox(height: 10),
+                      Text(scene.title,
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center),
+                      SizedBox(height: 10),
+                      Text(
+                        scene.description,
+                        style: TextStyle(fontSize: 15),
+                        textAlign: TextAlign.justify,
+                      )
+                    ]))
+              ])));
     }
   }
 }

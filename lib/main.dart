@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:murdermystery2021/login/login_screen.dart';
 import 'package:murdermystery2021/menu_screen.dart';
 import 'package:murdermystery2021/models/User.dart';
@@ -20,6 +21,22 @@ void main() async {
   runApp(MyApp());
 }
 
+const MaterialColor kPrimaryColor = const MaterialColor(
+  0xFF221c13,
+  const <int, Color>{
+    50: const Color(0xFF221c13),
+    100: const Color(0xFF221c13),
+    200: const Color(0xFF221c13),
+    300: const Color(0xFF221c13),
+    400: const Color(0xFF221c13),
+    500: const Color(0xFF221c13),
+    600: const Color(0xFF221c13),
+    700: const Color(0xFF221c13),
+    800: const Color(0xFF221c13),
+    900: const Color(0xFF221c13),
+  },
+);
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -27,8 +44,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Murder Mystery 2021',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: kPrimaryColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        fontFamily: GoogleFonts.roboto().fontFamily,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+            style: TextButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                textStyle:
+                    GoogleFonts.roboto(color: Colors.white, fontSize: 20))),
       ),
       home: MyHomePage(title: 'PopCult murder mystery 2021'),
     );
@@ -55,17 +78,23 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(getWelcomeString()),
-      ),
-      resizeToAvoidBottomPadding: false,
-      body:
-          _getScreenForUser(), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        appBar: AppBar(
+          title: Text(getWelcomeString()),
+        ),
+        body: DecoratedBox(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("images/pozadie.png"), fit: BoxFit.cover),
+            ),
+            child: Container(
+                padding: EdgeInsets.all(15), child: _getScreenForUser()))
+        // This trailing comma makes auto-formatting nicer for build methods.
+        );
   }
 
   Widget _getScreenForUser() {
     if (loggedUser == null) {
+      // return WelcomeScreen();
       return LoginScreen(userChanged: _userChanged);
     } else {
       //do the menu

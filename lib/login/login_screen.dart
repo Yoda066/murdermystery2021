@@ -12,19 +12,37 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        RaisedButton(
-          onPressed: () {
-            _loginAsNpc(context);
-          },
-          child: const Text('login as NPC'),
+        Expanded(
+          child: SizedBox(),
+          flex: 3,
         ),
-        const SizedBox(height: 30),
-        RaisedButton(
+        Text('ZADAJTE NÁZOV VÁŠHO TÍMU', style: TextStyle(fontSize: 25)),
+        const SizedBox(height: 10),
+        Text(
+          'Vyberte si, ako sa bude volať Váš tím. Názov musí byť v rozmedzí 3 - 16 znakov.',
+          textAlign: TextAlign.center,
+        ),
+        Expanded(child: SizedBox(), flex: 1),
+        Container(
+          padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 40.0),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: "napr: POPCULT",
+              filled: true,
+              fillColor: Colors.white,
+              border: InputBorder.none,
+            ),
+            maxLength: 16,
+          ),
+        ),
+        Expanded(child: SizedBox(), flex: 1),
+        ElevatedButton(
           onPressed: () {
             _loginAsPlayer(context);
           },
-          child: const Text('login as player'),
-        )
+          child: const Text('POKRAČOVAŤ'),
+        ),
+        Expanded(child: SizedBox(), flex: 3),
       ]),
     );
   }

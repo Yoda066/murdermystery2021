@@ -6,73 +6,89 @@ import '../models/Npc.dart';
 
 class NpcListItem extends StatelessWidget {
   final Npc npc;
+  static final double height = 150.0;
 
   NpcListItem(this.npc);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => NpcState(npc)),
-        );
-      },
-      child: Container(
-        padding: EdgeInsets.all(15.0),
-        margin: EdgeInsets.only(bottom: 5),
-        constraints: BoxConstraints.expand(height: 150),
-        color: Colors.grey[300],
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(child: getInfo()),
-            const SizedBox(width: 5),
-            getImage()
-          ],
-        ),
-      ),
-    );
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NpcState(npc)),
+          );
+        },
+        child: Container(
+            margin: EdgeInsets.only(bottom: 10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+              color: Color(0xFF221c13),
+            ),
+            height: height,
+            child: Row(
+              children: [getImage(), getInfo()],
+            )));
   }
 
   Widget getInfo() {
-    // npc.backstory.split('. ').sublist(0, 5).join(".")+".";
-
-    return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Align(
-          alignment: Alignment.topLeft,
-          child: Text(npc.name,
-              maxLines: 1,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
-      Align(
-          alignment: Alignment.topLeft,
-          child: Text(npc.backstory,
-              maxLines: 4,
+    return Expanded(
+        child: Padding(
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            npc.name,
+            maxLines: 1,
+            style: TextStyle(
+                fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+            textAlign: TextAlign.left,
+          ),
+          Text(npc.backstory,
+              maxLines: 3,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 15))),
-      Align(
-        alignment: Alignment.topLeft,
-        child: getStatus(npc),
-      )
-    ]);
+              style: TextStyle(fontSize: 14, color: Colors.white)),
+          getStatus(npc),
+        ],
+      ),
+    ));
   }
 
   Widget getImage() {
     return ClipRRect(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(5), bottomLeft: Radius.circular(5)),
         child: Image(
-            image: AssetImage('images/profiles/${npc.image}'),
-            width: 100.0,
-            height: 100.0));
+            image: AssetImage('images/profiles/${npc.image}'), height: height));
   }
 
   Widget getStatus(Npc npc) {
     if (npc.calledBy == null) {
-      return Text('Status: Dostupný',
-          maxLines: 2, style: TextStyle(fontSize: 15));
+      return RichText(
+          text: TextSpan(
+        children: [
+          TextSpan(
+              text: 'Status: ',
+              style: TextStyle(fontSize: 15, color: Colors.white)),
+          TextSpan(
+              text: 'Dostupný',
+              style: TextStyle(fontSize: 15, color: Colors.green)),
+        ],
+      ));
     } else {
-      return Text('Status: Zaneprázdnený pri tíme "${npc.calledBy}"',
-          maxLines: 2, style: TextStyle(fontSize: 15));
+      return RichText(
+          text: TextSpan(
+        children: [
+          TextSpan(
+              text: 'Status: ',
+              style: TextStyle(fontSize: 15, color: Colors.white)),
+          TextSpan(
+              text: 'Pri tíme "${npc.calledBy}"',
+              style: TextStyle(fontSize: 15, color: Colors.red)),
+        ],
+      ));
     }
   }
 }

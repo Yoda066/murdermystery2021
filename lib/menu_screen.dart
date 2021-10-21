@@ -17,44 +17,70 @@ class MenuScreen extends StatelessWidget {
     return Center(
       child: FractionallySizedBox(
         widthFactor: 0.5,
-        heightFactor: 0.45,
+        heightFactor: 1,
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              RaisedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SceneScreen()),
-                  );
-                },
-                child: const Text('Scéna'),
-              ),
-              RaisedButton(
-                onPressed: () {
-                  _navigateToVictim(context);
-                },
-                child: const Text('Obeť'),
-              ),
-              RaisedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => NpcListScreen()),
-                  );
-                },
-                child: const Text('Zoznam podozrivých'),
-              ),
-              RaisedButton(
-                onPressed: () {
-                  _logout();
-                },
-                child: const Text('Odhlásiť'),
-              )
-            ]),
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: SizedBox(),
+              flex: 2,
+            ),
+            getMainMenu(context),
+            Expanded(child: SizedBox(), flex: 2),
+            ElevatedButton(
+              onPressed: () {
+                _logout();
+              },
+              child: const Text('VYRIEŠIŤ'),
+            ),
+            Expanded(child: SizedBox(), flex: 1),
+          ],
+        ),
       ),
     );
+  }
+
+  Widget getMainMenu(BuildContext context) {
+    return Column(
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SceneScreen()),
+              );
+            },
+            child: const Text('SCÉNA'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _navigateToVictim(context);
+            },
+            child: const Text('OBEŤ'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NpcListScreen()),
+              );
+            },
+            child: const Text('PODOZRIVÍ'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _logout();
+            },
+            child: const Text('ZAUJÍMAVOSTI'),
+          ),
+        ]
+            .map(
+              (e) => Padding(
+                  child: e, padding: const EdgeInsets.symmetric(vertical: 5)),
+            )
+            .toList());
   }
 
   void _logout() async {
