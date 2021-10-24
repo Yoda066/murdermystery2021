@@ -28,8 +28,6 @@ class _SceneState extends State<SceneScreen> {
   }
 
   _onEntryChanged(Event event) {
-    print(event.snapshot);
-
     if (mounted) {
       setState(() {
         scene = Scene.fromSnapshot(event.snapshot);
@@ -54,7 +52,7 @@ class _SceneState extends State<SceneScreen> {
 
   getBody() {
     if (scene == null) {
-      return Text("Loading...", style: TextStyle(fontSize: 15));
+      return Center(child: CircularProgressIndicator());
     } else {
       return SingleChildScrollView(
           child: DecoratedBox(

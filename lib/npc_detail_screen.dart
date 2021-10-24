@@ -183,18 +183,27 @@ class _NpcStateState extends State<NpcState> {
       //ak ide hrac niekoho zavolat, zrusi sa zavolanie predchadzajuceho NPC
       if (key != null) {
         await itemref.once().then((DataSnapshot dataSnapshot) async {
+          var alreadyCalledSomeone = false;
           dataSnapshot.value.forEach((key, value) async {
             if (value['calledBy'] == user.key) {
-              await itemref.child(key).update({'calledBy': null});
+              alreadyCalledSomeone = true;
             }
           });
+
+          if (alreadyCalledSomeone) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(
+                    "Nemôžete privolať iného podozrivého, kým neskončí prvý výsluch.")));
+          } else {
+            await itemref.child(npc.key).update({'calledBy': key});
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("${npc.name} bude ochvíľu pri vás.")));
+            print('Success.');
+          }
         }).catchError((e) {
           print(e);
         });
       }
-
-      await itemref.child(npc.key).update({'calledBy': key});
-      print('Success.');
     } catch (e) {
       print('You got error.');
     }

@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         fontFamily: GoogleFonts.roboto().fontFamily,
         elevatedButtonTheme: ElevatedButtonThemeData(
             style: TextButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 textStyle:
                     GoogleFonts.roboto(color: Colors.white, fontSize: 20))),
       ),
