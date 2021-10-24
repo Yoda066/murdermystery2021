@@ -16,7 +16,7 @@ class NpcDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(title: Text(user.name)),
         body: DecoratedBox(
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -185,7 +185,7 @@ class _NpcStateState extends State<NpcState> {
         await itemref.once().then((DataSnapshot dataSnapshot) async {
           var alreadyCalledSomeone = false;
           dataSnapshot.value.forEach((key, value) async {
-            if (value['calledBy'] == user.key) {
+            if (value['calledBy'] == user.name) {
               alreadyCalledSomeone = true;
             }
           });
@@ -195,7 +195,7 @@ class _NpcStateState extends State<NpcState> {
                 content: Text(
                     "Nemôžete privolať iného podozrivého, kým neskončí prvý výsluch.")));
           } else {
-            await itemref.child(npc.key).update({'calledBy': key});
+            await itemref.child(npc.key).update({'calledBy': user.name});
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("${npc.name} bude ochvíľu pri vás.")));
           }

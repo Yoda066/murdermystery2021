@@ -3,6 +3,7 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:murdermystery2021/models/Npc.dart';
 import 'package:murdermystery2021/npc_list/npc_list_item.dart';
+import 'package:murdermystery2021/utils/MySharedPreferences.dart';
 
 class NpcListScreen extends StatefulWidget {
   @override
@@ -17,9 +18,21 @@ class _NpcListState extends State<NpcListScreen> {
   @override
   void initState() {
     super.initState();
+    _loadUser();
+
     itemref = FirebaseDatabase.instance.reference().child("NPCS");
+
     itemref.onChildAdded.listen(_onEntryAdded);
     itemref.onChildChanged.listen(_onEntryChanged);
+  }
+
+  void _loadUser() async {
+    var logged = await MySharedPreferences.getLoggedUser();
+    if (mounted) {
+      setState(() {
+        this.loggedUser = logged;
+      });
+    }
   }
 
   _onEntryChanged(Event event) {
@@ -45,7 +58,7 @@ class _NpcListState extends State<NpcListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(title: Text(loggedUser?.name ?? "")),
         body: Column(
           children: [
             Expanded(

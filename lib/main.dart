@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:murdermystery2021/login/login_screen.dart';
 import 'package:murdermystery2021/menu_screen.dart';
@@ -18,6 +19,13 @@ void main() async {
               "https://murdermystery-2021-default-rtdb.europe-west1.firebasedatabase.app",
           messagingSenderId: "567967765714"));
   await FirebaseAuth.instance.signInAnonymously();
+
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.portraitUp,
+  ]);
+
   runApp(MyApp());
 }
 
@@ -98,7 +106,10 @@ class _MyHomePageState extends State<MyHomePage> {
       return LoginScreen(userChanged: _userChanged);
     } else {
       //do the menu
-      return MenuScreen(userChanged: _userChanged);
+      return MenuScreen(
+        userChanged: _userChanged,
+        loggedUser: loggedUser,
+      );
     }
   }
 
@@ -119,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (loggedUser == null) {
       return widget.title;
     } else {
-      return 'Vitaj ${loggedUser.key}';
+      return 'Vitaj ${loggedUser.name}';
     }
   }
 }

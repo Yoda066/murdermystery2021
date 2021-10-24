@@ -1,5 +1,4 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:murdermystery2021/models/Scene.dart';
 import 'package:murdermystery2021/models/User.dart';
@@ -47,7 +46,7 @@ class _SceneState extends State<SceneScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(user?.key ?? "")), body: getBody());
+        appBar: AppBar(title: Text(user?.name ?? "")), body: getBody());
   }
 
   getBody() {
