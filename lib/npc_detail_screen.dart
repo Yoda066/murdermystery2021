@@ -177,7 +177,7 @@ class _NpcStateState extends State<NpcState> {
   }
 
   void _updateAllocation(LoggedUser user) async {
-    var key = user == null ? null : user.key;
+    var key = user?.key;
 
     try {
       //ak ide hrac niekoho zavolat, zrusi sa zavolanie predchadzajuceho NPC
@@ -198,11 +198,12 @@ class _NpcStateState extends State<NpcState> {
             await itemref.child(npc.key).update({'calledBy': key});
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("${npc.name} bude ochvíľu pri vás.")));
-            print('Success.');
           }
         }).catchError((e) {
           print(e);
         });
+      } else {
+        await itemref.child(npc.key).update({'calledBy': null});
       }
     } catch (e) {
       print('You got error.');

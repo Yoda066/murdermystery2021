@@ -70,7 +70,7 @@ class _LoginState extends State<LoginScreen> {
         ElevatedButton(
           onPressed: () {
             if (_formKey.currentState.validate()) {
-              _loginAsPlayer(context, teamNameController.value.text);
+              _login(context, teamNameController.value.text);
             }
           },
           child: const Text('POKRAČOVAŤ'),
@@ -78,6 +78,30 @@ class _LoginState extends State<LoginScreen> {
         Expanded(child: SizedBox(), flex: 3),
       ]),
     );
+  }
+
+  _login(BuildContext context, String name) async {
+    //checknem ci prihlasovacie meno zodpoveda klucu nejakej NPC
+    await FirebaseDatabase.instance
+        .reference()
+        .child("NPCS")
+        .once()
+        .then((DataSnapshot dataSnapshot) async {
+      var t = dataSnapshot.value as Map;
+      var isNPC = t.keys.firstWhereOrNull((element) => element == name) != null;
+
+      if (isNPC) {
+        _loginAsNpc(context, name);
+      } else {
+        _loginAsPlayer(context, name);
+      }
+    });
+  }
+
+  _loginAsNpc(BuildContext context, String name) {
+    var user = new LoggedUser(name, UserType.NPC);
+    MySharedPreferences.setLoggedUser(user);
+    widget.userChanged(user);
   }
 
   void _loginAsPlayer(BuildContext context, String name) async {
@@ -97,11 +121,5 @@ class _LoginState extends State<LoginScreen> {
       MySharedPreferences.setLoggedUser(user);
       widget.userChanged(user);
     });
-  }
-
-  _loginAsNpc(BuildContext context) {
-    var user = new LoggedUser('Tobik', UserType.NPC);
-    MySharedPreferences.setLoggedUser(user);
-    widget.userChanged(user);
   }
 }
