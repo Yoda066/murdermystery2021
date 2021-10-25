@@ -22,4 +22,15 @@ class MySharedPreferences {
     final pref = await SharedPreferences.getInstance();
     return await pref.remove('loggedUser');
   }
+
+  static Future<bool> setSeenWelcomeScreen(bool seenWelcome) async {
+    final pref = await SharedPreferences.getInstance();
+    return await pref.setBool('seenWelcome', seenWelcome);
+  }
+
+  static Future<bool> getSeenWelcome() async {
+    final pref = await SharedPreferences.getInstance();
+    bool result = pref.getBool('seenWelcome');
+    return (result != null && result);
+  }
 }

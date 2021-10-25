@@ -102,7 +102,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _getScreenForUser() {
     if (loggedUser == null) {
-      // return WelcomeScreen();
       return LoginScreen(userChanged: _userChanged);
     } else {
       //do the menu

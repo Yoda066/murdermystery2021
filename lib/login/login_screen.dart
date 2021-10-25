@@ -17,15 +17,93 @@ class LoginScreen extends StatefulWidget {
 class _LoginState extends State<LoginScreen> {
   DatabaseReference itemref;
   List<Team> teams;
+  bool showedWelcome = true;
 
   @override
   void initState() {
     super.initState();
     itemref = FirebaseDatabase.instance.reference().child("TEAMS");
+    _seenWelcome();
   }
 
   @override
   Widget build(BuildContext context) {
+    return getScreen();
+  }
+
+  _login(BuildContext context, String name) async {
+    //checknem ci prihlasovacie meno zodpoveda klucu nejakej NPC
+    await FirebaseDatabase.instance
+        .reference()
+        .child("NPCS")
+        .child(name)
+        .once()
+        .then((DataSnapshot dataSnapshot) async {
+      var npc = dataSnapshot.value as Map;
+
+      if (npc != null) {
+        _loginAsNpc(context, name, npc['name']);
+      } else {
+        _loginAsPlayer(context, name);
+      }
+    });
+  }
+
+  void _seenWelcome() async {
+    var seen = await MySharedPreferences.getSeenWelcome();
+    if (mounted) {
+      setState(() {
+        showedWelcome = seen;
+      });
+    }
+  }
+
+  void goToLogin() async {
+    await MySharedPreferences.setSeenWelcomeScreen(true);
+    setState(() {
+      showedWelcome = true;
+    });
+  }
+
+  _loginAsNpc(BuildContext context, String key, String name) async {
+    var user = new LoggedUser(key, name, UserType.NPC);
+    await MySharedPreferences.setLoggedUser(user);
+    widget.userChanged(user);
+  }
+
+  void _loginAsPlayer(BuildContext context, String name) async {
+    //create and save user if doesnt exists
+    await itemref.once().then((DataSnapshot dataSnapshot) async {
+      var t = dataSnapshot.value as Map;
+      var selectedTeam = t.entries
+          .firstWhereOrNull((element) => element.value['name'] == name);
+
+      var user;
+      if (selectedTeam == null) {
+        var newteam = itemref.push();
+        newteam.update({
+          'name': name,
+        });
+
+        user = new LoggedUser(newteam.key, name, UserType.PLAYER);
+      } else {
+        user = new LoggedUser(selectedTeam.key, name, UserType.PLAYER);
+      }
+
+      MySharedPreferences.setLoggedUser(user);
+      widget.userChanged(user);
+    });
+  }
+
+  Widget getScreen() {
+    if (showedWelcome) {
+      return getLoginScreen();
+    } else {
+      return getWelcomeScreen();
+    }
+  }
+
+  Widget getLoginScreen() {
     final _formKey = GlobalKey<FormState>();
     TextEditingController teamNameController = TextEditingController();
 
@@ -79,51 +157,35 @@ class _LoginState extends State<LoginScreen> {
     );
   }
 
-  _login(BuildContext context, String name) async {
-    //checknem ci prihlasovacie meno zodpoveda klucu nejakej NPC
-    await FirebaseDatabase.instance
-        .reference()
-        .child("NPCS")
-        .child(name)
-        .once()
-        .then((DataSnapshot dataSnapshot) async {
-      var npc = dataSnapshot.value as Map;
-
-      if (npc != null) {
-        _loginAsNpc(context, name, npc['name']);
-      } else {
-        _loginAsPlayer(context, name);
-      }
-    });
-  }
-
-  _loginAsNpc(BuildContext context, String key, String name) {
-    var user = new LoggedUser(key, name, UserType.NPC);
-    MySharedPreferences.setLoggedUser(user);
-    widget.userChanged(user);
-  }
-
-  void _loginAsPlayer(BuildContext context, String name) async {
-    //create and save user if doesnt exists
-    await itemref.once().then((DataSnapshot dataSnapshot) async {
-      var t = dataSnapshot.value as Map;
-      var selectedTeam = t.entries
-          .firstWhereOrNull((element) => element.value['name'] == name);
-
-      var user;
-      if (selectedTeam == null) {
-        var newteam = itemref.push();
-        newteam.update({
-          'name': name,
-        });
-
-        user = new LoggedUser(newteam.key, name, UserType.PLAYER);
-      } else {
-        user = new LoggedUser(selectedTeam.key, name, UserType.PLAYER);
-      }
-
-      MySharedPreferences.setLoggedUser(user);
-      widget.userChanged(user);
-    });
+  Widget getWelcomeScreen() {
+    return Center(
+        child: Container(
+      padding: EdgeInsets.fromLTRB(15, 20, 15, 60),
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Expanded(flex: 1, child: SizedBox()),
+        Image(image: AssetImage('images/ikona.png'), width: 150.0),
+        const SizedBox(height: 20),
+        Text('Vitajte detektívi!', style: TextStyle(fontSize: 25)),
+        const SizedBox(height: 20),
+        Container(
+            padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+            child: Text(
+                'V mestečku Silvertown sa našla mŕtvola šerifa Jenkinsa. Podarí sa vám odhaliť tajomstvá mesta a dolapiť vraha?',
+                textAlign: TextAlign.center)),
+        const SizedBox(height: 30),
+        ElevatedButton(
+          onPressed: () {
+            goToLogin();
+          },
+          child: Text('POKRAČOVAŤ'),
+        ),
+        Expanded(flex: 1, child: SizedBox()),
+        Text(
+          'Užite si detektívnu hru, ktorú pre vás pripravil PoP-Cult. \nwww.popcult.sk',
+          style: TextStyle(fontSize: 15),
+          textAlign: TextAlign.center,
+        ),
+      ]),
+    ));
   }
 }
