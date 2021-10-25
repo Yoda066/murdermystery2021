@@ -8,11 +8,32 @@ import 'package:murdermystery2021/quiz/quiz_screen.dart';
 import 'package:murdermystery2021/scnene_screen.dart';
 import 'package:murdermystery2021/utils/MySharedPreferences.dart';
 
-class MenuScreen extends StatelessWidget {
+class MenuScreen extends StatefulWidget {
   final userChanged;
   final LoggedUser loggedUser;
 
   MenuScreen({this.userChanged, this.loggedUser});
+
+  @override
+  _MenuState createState() => _MenuState();
+}
+
+class _MenuState extends State<MenuScreen> {
+  bool quizAvailable = false;
+
+  @override
+  void initState() {
+    FirebaseDatabase.instance
+        .reference()
+        .child("QUIZ_AVAILABLE")
+        .onValue
+        .listen((event) {
+      setState(() {
+        quizAvailable = event.snapshot.value;
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +102,7 @@ class MenuScreen extends StatelessWidget {
   }
 
   Widget getSolveButton(BuildContext context) {
-    if (loggedUser.type == UserType.PLAYER) {
+    if (widget.loggedUser.type == UserType.PLAYER) {
       return ElevatedButton(
         onPressed: () {
           solveCase(context);
@@ -94,25 +115,39 @@ class MenuScreen extends StatelessWidget {
 
   void _logout() async {
     await MySharedPreferences.logout();
-    userChanged(null);
+    widget.userChanged(null);
   }
 
   void solveCase(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-              title: Text("Vyriešiť prípad?"),
-              content: Text(
-                  'Pozor, chystáte sa ukončiť hru. Pre vyriešenie prípadu musíte zodpovedať záverečné otázky a obviniť jedného alebo viac vypočutých podozrivých. \nNa zodpovedanie otázok máte iba jeden pokus, preto si svojím riešením musíte byť istí. \n\nChcete zadať riešenie?'),
-              actions: [
-                TextButton(
-                    onPressed: () => {Navigator.of(context).pop()},
-                    child: (Text("Nie"))),
-                TextButton(
-                    onPressed: () => _navigateToQuiz(context),
-                    child: (Text("Áno")))
-              ],
-            ));
+    if (!quizAvailable) {
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+                title: Text("Vyriešiť prípad?"),
+                content: Text('Vyriešenie prípadu zatiaľ nie je k dispozícii.'),
+                actions: [
+                  TextButton(
+                      onPressed: () => {Navigator.of(context).pop()},
+                      child: (Text("OK"))),
+                ],
+              ));
+    } else {
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+                title: Text("Vyriešiť prípad?"),
+                content: Text(
+                    'Pozor, chystáte sa ukončiť hru. Pre vyriešenie prípadu musíte zodpovedať záverečné otázky a obviniť jedného alebo viac vypočutých podozrivých. \nNa zodpovedanie otázok máte iba jeden pokus, preto si svojím riešením musíte byť istí. \n\nChcete zadať riešenie?'),
+                actions: [
+                  TextButton(
+                      onPressed: () => {Navigator.of(context).pop()},
+                      child: (Text("Nie"))),
+                  TextButton(
+                      onPressed: () => _navigateToQuiz(context),
+                      child: (Text("Áno")))
+                ],
+              ));
+    }
   }
 
   void _navigateToQuiz(BuildContext context) async {
