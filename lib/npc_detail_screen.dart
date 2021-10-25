@@ -16,7 +16,7 @@ class NpcDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(user.name)),
+        appBar: AppBar(title: Text(user?.name ?? "")),
         body: DecoratedBox(
             decoration: BoxDecoration(
               image: DecorationImage(

@@ -32,6 +32,11 @@ class _LoginState extends State<LoginScreen> {
   }
 
   _login(BuildContext context, String name) async {
+    if (name == "MegaAdmin") {
+      _loginAsAdmin(context);
+      return;
+    }
+
     //checknem ci prihlasovacie meno zodpoveda klucu nejakej NPC
     await FirebaseDatabase.instance
         .reference()
@@ -67,6 +72,12 @@ class _LoginState extends State<LoginScreen> {
 
   _loginAsNpc(BuildContext context, String key, String name) async {
     var user = new LoggedUser(key, name, UserType.NPC);
+    await MySharedPreferences.setLoggedUser(user);
+    widget.userChanged(user);
+  }
+
+  _loginAsAdmin(BuildContext context) async {
+    var user = new LoggedUser("key", "O Velectený", UserType.ADMIN);
     await MySharedPreferences.setLoggedUser(user);
     widget.userChanged(user);
   }

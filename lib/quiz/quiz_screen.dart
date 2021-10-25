@@ -13,14 +13,12 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
   LoggedUser loggedUser;
   var questions = [];
   PageController pageController;
-  var tabConstroller;
-
   var page = 0;
+  List<String> answers = new List.filled(10, "");
 
   @override
   void initState() {
     super.initState();
-    tabConstroller = TabController(length: 1, vsync: this);
     pageController = PageController(initialPage: 1);
 
     _loadUser();
@@ -34,7 +32,6 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
         for (var i = 1; i <= snapshot.value.length; i++) {
           questions.add(snapshot.value['q$i']);
         }
-        tabConstroller = TabController(length: questions.length, vsync: this);
       });
     });
   }
@@ -48,17 +45,26 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(loggedUser?.name ?? ""),
-        ),
-        body: DecoratedBox(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage("images/pozadie.png"), fit: BoxFit.cover),
+    return WillPopScope(
+        onWillPop: () async {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content:
+                  Text("Nepytal som sa zo srandy. Musite zodpovedat otazky.")));
+          return false;
+        },
+        child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              title: Text(loggedUser?.name ?? ""),
             ),
-            child: Container(
-                padding: EdgeInsets.all(15),
+            body: DecoratedBox(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage("images/pozadie.png"),
+                      fit: BoxFit.cover),
+                ),
+                child: Container(
+                    padding: EdgeInsets.all(15),
                 child: Column(children: [
                   getQuestionsPager(),
                   Row(children: [
@@ -67,17 +73,17 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
                       child: ElevatedButton(
                           onPressed: () {
                             previousPage();
-                          },
-                          child: Text('SPÄŤ')),
-                    ),
-                    Expanded(
-                        flex: 1,
-                        child: SizedBox(
-                          width: 20,
-                        )),
-                    Expanded(flex: 2, child: getNextButton())
-                  ])
-                ]))));
+                              },
+                              child: Text('SPÄŤ')),
+                        ),
+                        Expanded(
+                            flex: 1,
+                            child: SizedBox(
+                              width: 20,
+                            )),
+                        Expanded(flex: 2, child: getNextButton())
+                      ])
+                    ])))));
   }
 
   void nextPage() {
@@ -97,44 +103,54 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
   }
 
   Widget getQuestionsPager() {
-    var i = 1;
+    List<Widget> questionWidgets = [];
+
+    for (var i = 0; i < questions.length; i++) {
+      var controller = TextEditingController(text: answers[i]);
+
+      questionWidgets.add(Column(children: [
+        Text(
+          "Otázka č. ${i + 1}:",
+          style: TextStyle(fontSize: 20),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Text(questions[i], style: TextStyle(fontSize: 20)),
+        SizedBox(
+          height: 20,
+        ),
+        Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: TextFormField(
+              onChanged: (text) {
+                answers[i] = text;
+                print(answers);
+              },
+              controller: controller,
+              maxLines: 5,
+              decoration: InputDecoration(
+                hintText: "Odpoveď...",
+                filled: true,
+                fillColor: Colors.white,
+                border: InputBorder.none,
+              ),
+            ))
+      ]));
+    }
+
     return Expanded(
         child: PageView(
             onPageChanged: setPageState,
             controller: pageController,
-            children: questions
-                .map((e) => Column(children: [
-                      Text(
-                        "Otázka č. ${i++}:",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(e, style: TextStyle(fontSize: 20)),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: TextFormField(
-                            maxLines: 5,
-                            decoration: InputDecoration(
-                              hintText: "Odpoveď...",
-                              filled: true,
-                              fillColor: Colors.white,
-                              border: InputBorder.none,
-                            ),
-                          ))
-                    ]))
-                .toList()));
+            children: questionWidgets));
   }
 
   getNextButton() {
     if (page == questions.length - 1) {
       return ElevatedButton(
           onPressed: () {
-            sendResult();
+            showSendDialog();
           },
           child: Text('ODOSLAŤ'));
     } else {
@@ -146,9 +162,32 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
     }
   }
 
+  void showSendDialog() {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              title: Text("Vyriešiť prípad?"),
+              content: Text(
+                  'Odpovede môžete odoslať iba raz! Ste si istý, že chcete ukončiť hru?'),
+              actions: [
+                TextButton(
+                    onPressed: () => {Navigator.of(context).pop()},
+                    child: (Text("Ešte nie"))),
+                TextButton(
+                    onPressed: () =>
+                        {Navigator.of(context).pop(), sendResult()},
+                    child: (Text("Vyriešiť"))),
+              ],
+            ));
+  }
+
   void sendResult() async {
     var result = Map<String, dynamic>();
-    result.putIfAbsent("q1", () => "answer");
+
+    var i = 1;
+    answers.forEach((element) {
+      result.putIfAbsent("q${i++}", () => element);
+    });
 
     await FirebaseDatabase.instance
         .reference()

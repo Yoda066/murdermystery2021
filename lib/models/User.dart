@@ -22,4 +22,4 @@ class LoggedUser {
 enum UserType {
   NPC,
   PLAYER,
-}
+  ADMIN }
