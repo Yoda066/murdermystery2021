@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:murdermystery2021/curiosity_list/curiosity_list_screen.dart';
 import 'package:murdermystery2021/models/Npc.dart';
 import 'package:murdermystery2021/models/QuizState.dart';
 import 'package:murdermystery2021/models/User.dart';
@@ -95,17 +96,17 @@ class _MenuState extends State<MenuScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NpcListScreen()),
+                MaterialPageRoute(builder: (context) => CuriosityListScreen()),
               );
             },
             child: const Text('ZAUJÍMAVOSTI'),
           ),
-          ElevatedButton(
-            onPressed: () {
-              _logout();
-            },
-            child: const Text('ODHLÁSIŤ'),
-          ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     _logout();
+          //   },
+          //   child: const Text('ODHLÁSIŤ'),
+          // ),
         ]
             .map(
               (e) => Padding(
