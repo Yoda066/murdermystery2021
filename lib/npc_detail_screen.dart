@@ -1,15 +1,18 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:murdermystery2021/models/Npc.dart';
+import 'package:murdermystery2021/models/QuizState.dart';
 import 'package:murdermystery2021/models/User.dart';
 import 'package:murdermystery2021/utils/MySharedPreferences.dart';
 
 class NpcDetailScreen extends StatelessWidget {
-  const NpcDetailScreen(this.npc, this.user, this.updateAllocation);
+  const NpcDetailScreen(
+      this.npc, this.user, this.updateAllocation, this.quizState);
 
   final Npc npc;
   final LoggedUser user;
   final updateAllocation;
+  final QuizState quizState;
 
   final imageWidth = 250.0;
 
@@ -89,7 +92,7 @@ class NpcDetailScreen extends StatelessWidget {
   }
 
   Widget _getCallButton() {
-    if (npc.unavailable) {
+    if (npc.unavailable || this.quizState == QuizState.DONE) {
       return SizedBox(height: 0);
     }
 
@@ -147,6 +150,7 @@ class _NpcStateState extends State<NpcState> {
   DatabaseReference itemref;
   Npc npc;
   LoggedUser user;
+  QuizState quizState;
 
   @override
   void initState() {
@@ -154,7 +158,7 @@ class _NpcStateState extends State<NpcState> {
     npc = widget.npc;
     itemref = FirebaseDatabase.instance.reference().child("NPCS");
     itemref.onChildChanged.listen(_onEntryChanged);
-    _loadUser();
+    _loadUserAndState();
   }
 
   _onEntryChanged(Event event) {
@@ -167,11 +171,13 @@ class _NpcStateState extends State<NpcState> {
     }
   }
 
-  void _loadUser() async {
+  void _loadUserAndState() async {
     var logged = await MySharedPreferences.getLoggedUser();
+    var state = await MySharedPreferences.getQuizState();
     if (mounted) {
       setState(() {
-        this.user = logged;
+        user = logged;
+        quizState = state;
       });
     }
   }
@@ -212,6 +218,6 @@ class _NpcStateState extends State<NpcState> {
 
   @override
   Widget build(BuildContext context) {
-    return NpcDetailScreen(npc, user, _updateAllocation);
+    return NpcDetailScreen(npc, user, _updateAllocation, quizState);
   }
 }

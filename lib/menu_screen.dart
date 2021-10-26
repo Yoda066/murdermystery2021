@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:murdermystery2021/models/Npc.dart';
+import 'package:murdermystery2021/models/QuizState.dart';
 import 'package:murdermystery2021/models/User.dart';
 import 'package:murdermystery2021/npc_detail_screen.dart';
 import 'package:murdermystery2021/npc_list/npc_list_screen.dart';
@@ -10,9 +11,8 @@ import 'package:murdermystery2021/utils/MySharedPreferences.dart';
 
 class MenuScreen extends StatefulWidget {
   final userChanged;
-  final LoggedUser loggedUser;
 
-  MenuScreen({this.userChanged, this.loggedUser});
+  MenuScreen({this.userChanged});
 
   @override
   _MenuState createState() => _MenuState();
@@ -20,6 +20,8 @@ class MenuScreen extends StatefulWidget {
 
 class _MenuState extends State<MenuScreen> {
   bool quizAvailable = false;
+  LoggedUser loggedUser;
+  QuizState quizState;
 
   @override
   void initState() {
@@ -33,6 +35,8 @@ class _MenuState extends State<MenuScreen> {
       });
     });
     super.initState();
+
+    loadUser();
   }
 
   @override
@@ -89,6 +93,15 @@ class _MenuState extends State<MenuScreen> {
           ),
           ElevatedButton(
             onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NpcListScreen()),
+              );
+            },
+            child: const Text('ZAUJÍMAVOSTI'),
+          ),
+          ElevatedButton(
+            onPressed: () {
               _logout();
             },
             child: const Text('ODHLÁSIŤ'),
@@ -102,7 +115,7 @@ class _MenuState extends State<MenuScreen> {
   }
 
   Widget getSolveButton(BuildContext context) {
-    if (widget.loggedUser.type == UserType.PLAYER) {
+    if (loggedUser?.type == UserType.PLAYER) {
       return ElevatedButton(
         onPressed: () {
           solveCase(context);
@@ -115,11 +128,25 @@ class _MenuState extends State<MenuScreen> {
 
   void _logout() async {
     await MySharedPreferences.logout();
-    widget.userChanged(null);
+    if (widget.userChanged != null) {
+      widget.userChanged(null);
+    }
   }
 
   void solveCase(BuildContext context) {
-    if (!quizAvailable) {
+    if (quizState == QuizState.DONE) {
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+                title: Text("Vyriešiť prípad?"),
+                content: Text('Vaše odpovede boli odoslané na vyhodnotenie.'),
+                actions: [
+                  TextButton(
+                      onPressed: () => {Navigator.of(context).pop()},
+                      child: (Text("OK"))),
+                ],
+              ));
+    } else if (!quizAvailable) {
       showDialog(
           context: context,
           builder: (_) => AlertDialog(
@@ -171,6 +198,16 @@ class _MenuState extends State<MenuScreen> {
   }
 
   Future<LoggedUser> loadUser() async {
-    return await MySharedPreferences.getLoggedUser();
+    var user = await MySharedPreferences.getLoggedUser();
+    var quizStat = await MySharedPreferences.getQuizState();
+
+    if (quizStat == QuizState.STARTED) {
+      _navigateToQuiz(context);
+    } else {
+      setState(() {
+        loggedUser = user;
+        quizState = quizStat;
+      });
+    }
   }
 }

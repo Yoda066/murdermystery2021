@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:murdermystery2021/models/QuizState.dart';
 import 'package:murdermystery2021/models/User.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,5 +33,18 @@ class MySharedPreferences {
     final pref = await SharedPreferences.getInstance();
     bool result = pref.getBool('seenWelcome');
     return (result != null && result);
+  }
+
+  static Future<bool> setQuizState(QuizState state) async {
+    final pref = await SharedPreferences.getInstance();
+    print('setting: ${state.index}');
+    return await pref.setInt('quizState', state.index);
+  }
+
+  static Future<QuizState> getQuizState() async {
+    final pref = await SharedPreferences.getInstance();
+    int index = pref.getInt('quizState') ?? 0;
+    print('getting: $index');
+    return (QuizState.values.elementAt(index));
   }
 }

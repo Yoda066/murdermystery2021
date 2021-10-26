@@ -19,7 +19,4 @@ class LoggedUser {
   }
 }
 
-enum UserType {
-  NPC,
-  PLAYER,
-  ADMIN }
+enum UserType { NPC, PLAYER, ADMIN }

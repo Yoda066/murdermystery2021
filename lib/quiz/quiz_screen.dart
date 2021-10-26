@@ -1,5 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:murdermystery2021/main.dart';
+import 'package:murdermystery2021/models/QuizState.dart';
 import 'package:murdermystery2021/models/User.dart';
 import 'package:murdermystery2021/utils/MySharedPreferences.dart';
 
@@ -8,7 +10,7 @@ class QuizScreen extends StatefulWidget {
   _QuizScreenState createState() => _QuizScreenState();
 }
 
-class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
+class _QuizScreenState extends State<QuizScreen> {
   DatabaseReference itemref;
   LoggedUser loggedUser;
   var questions = [];
@@ -21,7 +23,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
     super.initState();
     pageController = PageController(initialPage: 1);
 
-    _loadUser();
+    _loadUserAndSetQuizState();
 
     itemref = FirebaseDatabase.instance.reference().child("QUIZ");
     itemref.onValue.listen((event) {
@@ -36,7 +38,8 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
     });
   }
 
-  Future<void> _loadUser() async {
+  Future<void> _loadUserAndSetQuizState() async {
+    await MySharedPreferences.setQuizState(QuizState.STARTED);
     var user = await MySharedPreferences.getLoggedUser();
     setState(() {
       loggedUser = user;
@@ -65,14 +68,14 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
                 ),
                 child: Container(
                     padding: EdgeInsets.all(15),
-                child: Column(children: [
-                  getQuestionsPager(),
-                  Row(children: [
-                    Expanded(
-                      flex: 2,
-                      child: ElevatedButton(
-                          onPressed: () {
-                            previousPage();
+                    child: Column(children: [
+                      getQuestionsPager(),
+                      Row(children: [
+                        Expanded(
+                          flex: 2,
+                          child: ElevatedButton(
+                              onPressed: () {
+                                previousPage();
                               },
                               child: Text('SPÄŤ')),
                         ),
@@ -194,6 +197,11 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
         .child("TEAMS")
         .child(loggedUser.key)
         .update(result);
+
+    await MySharedPreferences.setQuizState(QuizState.DONE);
+    Navigator.pop(context);
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => MyHomePage()));
   }
 
   void setPageState(int value) {

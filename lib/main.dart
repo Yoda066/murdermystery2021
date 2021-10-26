@@ -106,9 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       //do the menu
       return MenuScreen(
-        userChanged: _userChanged,
-        loggedUser: loggedUser,
-      );
+        userChanged: _userChanged);
     }
   }
 
