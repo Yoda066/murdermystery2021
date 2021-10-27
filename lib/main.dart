@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Murder Mystery 2021',
+      title: 'PoP-Cult: Vtedy v Libresse',
       theme: ThemeData(
         primarySwatch: kPrimaryColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
                 textStyle:
                     GoogleFonts.roboto(color: Colors.white, fontSize: 20))),
       ),
-      home: MyHomePage(title: 'PopCult murder mystery 2021'),
+      home: MyHomePage(title: 'PoP-Cult: Vtedy v Libresse'),
     );
   }
 }

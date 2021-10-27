@@ -124,7 +124,11 @@ class _LoginState extends State<LoginScreen> {
           child: SizedBox(),
           flex: 3,
         ),
-        Text('ZADAJTE NÁZOV VÁŠHO TÍMU', style: TextStyle(fontSize: 25)),
+        Text(
+          'ZADAJTE NÁZOV VÁŠHO TÍMU',
+          style: TextStyle(fontSize: 25),
+          textAlign: TextAlign.center,
+        ),
         const SizedBox(height: 10),
         Text(
           'Vyberte si, ako sa bude volať Váš tím. Názov musí byť v rozmedzí 3 - 16 znakov.',

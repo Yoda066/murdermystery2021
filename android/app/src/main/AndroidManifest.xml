@@ -48,7 +48,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Murder Mystery 2021"
+        android:label="PoP-Cult: Vtedy v Libresse"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
